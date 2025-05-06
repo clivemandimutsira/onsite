@@ -21,21 +21,21 @@ export async function getUsers() {
 
 
 export const registerUser = async (form) => {
-  const response = await fetch('/api/users/register', {
+  const response = await fetch(`${API_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ email: form.email }), // Only send email in body
+    body: JSON.stringify({ email: form.email, password: form.password }),
   });
 
   if (!response.ok) {
     throw new Error('Failed to register user');
   }
 
-  const data = await response.json();
-  return data; // This will include tempPassword
+  return await response.json();
 };
+
 
 
 
