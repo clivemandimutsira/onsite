@@ -174,7 +174,11 @@ const MemberPage = () => {
   const filteredMembers = members.filter((member) =>
     member.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    member.email.toLowerCase().includes(searchQuery.toLowerCase())
+    member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    member.contact_primary.toLowerCase().includes(searchQuery.toLowerCase()) || // Phone number
+    member.gender.toLowerCase().includes(searchQuery.toLowerCase()) || // Gender
+    member.member_type.toLowerCase().includes(searchQuery.toLowerCase()) || // Member type
+    member.status.toLowerCase().includes(searchQuery.toLowerCase()) // Status
   );
 
   const columns = [
