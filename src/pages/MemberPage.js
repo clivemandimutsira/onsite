@@ -29,6 +29,8 @@ import { runManualStatusUpdate} from '../api/adminService';
 
 import { AuthContext } from '../contexts/AuthContext';
 
+import * as XLSX from 'xlsx';
+
 const MemberPage = () => {
   const [members, setMembers] = useState([]);
   const [cellGroups, setCellGroups] = useState([]);
@@ -295,6 +297,34 @@ const MemberPage = () => {
     );
   }
 
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(filteredMembers); // Convert data to worksheet
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Members');
+    XLSX.writeFile(workbook, 'Members.xlsx'); // Save the file
+  };
+
+  const exportToCSV = () => {
+    const headers = Object.keys(filteredMembers[0] || {}).join(','); // Get CSV headers
+    const rows = filteredMembers.map((member) =>
+      Object.values(member).join(',')
+    ); // Convert each member object to a CSV row
+    const csvContent = [headers, ...rows].join('\n'); // Combine headers and rows
+  
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'Members.csv'); // Set the file name
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const handlePrint = () => {
+    window.print();
+  };
+
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>New Member Registration</Typography>
@@ -305,9 +335,17 @@ const MemberPage = () => {
             Add Member
           </Button>
         )}
-        <Button variant="outlined" onClick={handleManualTrigger}>
-          Run Member Status Update
-        </Button>
+        <Box>
+          <Button variant="outlined" onClick={exportToExcel} sx={{ mr: 2 }}>
+            Export to Excel
+          </Button>
+          <Button variant="outlined" onClick={exportToCSV} sx={{ mr: 2 }}>
+            Export to CSV
+          </Button>
+          <Button variant="outlined" onClick={handlePrint}>
+            Print
+          </Button>
+        </Box>
       </Box>
 
       <Typography variant="h4" gutterBottom>Members List</Typography>
