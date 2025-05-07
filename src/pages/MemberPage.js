@@ -342,8 +342,11 @@ const MemberPage = () => {
           <Button variant="outlined" onClick={exportToCSV} sx={{ mr: 2 }}>
             Export to CSV
           </Button>
-          <Button variant="outlined" onClick={handlePrint}>
+          <Button variant="outlined" onClick={handlePrint} sx={{ mr: 2 }}>
             Print
+          </Button>
+          <Button variant="outlined" color="secondary" onClick={handleManualTrigger}>
+            Run Manual Update
           </Button>
         </Box>
       </Box>
