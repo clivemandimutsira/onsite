@@ -8,7 +8,22 @@ export async function loginAPI({ email, password }) {
     body: JSON.stringify({ email, password }),
   });
 
-  const data = await res.json();
+  const contentType = res.headers.get('content-type');
+  let data;
+
+  // Try to parse JSON if possible
+  try {
+    if (contentType && contentType.includes('application/json')) {
+      data = await res.json();
+    } else {
+      const text = await res.text();
+      throw new Error(text || 'Unexpected server response');
+    }
+  } catch (err) {
+    console.error('JSON parse error:', err);
+    throw new Error('Invalid response from server');
+  }
+
   if (!res.ok) {
     throw new Error(data.message || 'Login failed');
   }
@@ -19,9 +34,10 @@ export async function loginAPI({ email, password }) {
     permissions:        data.permissions,
     userRole:           data.userRole,
     memberId:           data.memberId,
-    forcePasswordReset: data.forcePasswordReset,   // <— new
+    forcePasswordReset: data.forcePasswordReset,
   };
 }
+
 
 // Request a reset link be emailed
 export async function requestResetAPI({ email }) {
